@@ -68,10 +68,10 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
         Picasso.get().load(mRestaurant.getImageUrl()).into(mImageLabel);
 
         List<String> categories = new ArrayList<>();
-
-        for (Category category: mRestaurant.getCategories()) {
-            categories.add(category.getTitle());
-        }
+//
+//        for (Category category: mRestaurant.getCategories()) {
+//            categories.add(category.getTitle());
+//        }
 
         mNameLabel.setText(mRestaurant.getName());
         mCategoriesLabel.setText(android.text.TextUtils.join(", ", categories));
