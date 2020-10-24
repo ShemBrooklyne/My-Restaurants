@@ -5,20 +5,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.moringaschool.myrestaurant.Constants;
 import com.moringaschool.myrestaurant.adapters.RestaurantListAdapter;
 import com.moringaschool.myrestaurant.models.Business;
-import com.moringaschool.myrestaurant.models.Category;
-import com.moringaschool.myrestaurant.MyRestaurantsArrayAdapter;
 import com.moringaschool.myrestaurant.R;
 import com.moringaschool.myrestaurant.models.YelpBusinessesSearchResponse;
 import com.moringaschool.myrestaurant.network.YelpApi;
@@ -32,8 +29,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RestaurantsActivity extends AppCompatActivity {
-    private static final String TAG = RestaurantsActivity.class.getSimpleName();
+public class RestaurantListActivity extends AppCompatActivity {
+    private SharedPreferences mSharedPreferences;
+    private String mRecentAddress;
+    private static final String TAG = RestaurantListActivity.class.getSimpleName();
 
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
@@ -44,7 +43,6 @@ public class RestaurantsActivity extends AppCompatActivity {
     private RestaurantListAdapter mAdapter;
 
     public List<Business> restaurants;
-
 
 
     @Override
@@ -61,25 +59,44 @@ public class RestaurantsActivity extends AppCompatActivity {
 //            }
 //        });
 
+//        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        mRecentAddress = mSharedPreferences.getString(Constants.PREFERENCES_LOCATION_KEY, null);
+////        Log.d("Shared Pref Location", mRecentAddress);
+
         Intent intent = getIntent();
         String location = intent.getStringExtra("location");
 //        mLocationTextView.setText("Here are all the restaurants near: " + location);
 
         YelpApi client = YelpClient.getClient();
 
-        Call<YelpBusinessesSearchResponse> call = client.getRestaurants(location, "restaurants");
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mRecentAddress = mSharedPreferences.getString(Constants.PREFERENCES_LOCATION_KEY, null);
+
+        Log.v(TAG, mRecentAddress);
+
+        Call<YelpBusinessesSearchResponse> call;
+
+        if (mRecentAddress != null) {
+            call = client.getRestaurants(mRecentAddress, "restaurants");
+        } else {
+            call = client.getRestaurants(location, "restaurants");
+        }
+                Log.d("Shared Pref Location", mRecentAddress);
 
         call.enqueue(new Callback<YelpBusinessesSearchResponse>() {
+
             @Override
             public void onResponse(Call<YelpBusinessesSearchResponse> call, Response<YelpBusinessesSearchResponse> response) {
                 hideProgressBar();
 
+
+
                 if (response.isSuccessful()) {
                     restaurants = response.body().getBusinesses();
                     Log.i("Response Body", response.message());
-                    mAdapter = new RestaurantListAdapter(RestaurantsActivity.this, restaurants);
+                    mAdapter = new RestaurantListAdapter(RestaurantListActivity.this, restaurants);
                     mRecyclerView.setAdapter(mAdapter);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RestaurantsActivity.this);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(RestaurantListActivity.this);
                     mRecyclerView.setLayoutManager(layoutManager);
                     mRecyclerView.setHasFixedSize(true);
 
@@ -88,6 +105,8 @@ public class RestaurantsActivity extends AppCompatActivity {
                     showUnsuccessfulMessage();
                 }
             }
+
+
 
             @Override
             public void onFailure(Call<YelpBusinessesSearchResponse> call, Throwable t) {

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.RestaurantsActivity">
+            android:name=".ui.RestaurantListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.moringaschool.myrestaurant.ui.MainActivity">
@@ -22,7 +22,7 @@
             android:name=".ui.RestaurantDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.moringaschool.myrestaurant.ui.RestaurantsActivity">
+                android:value="com.moringaschool.myrestaurant.ui.RestaurantListActivity">
             </meta-data>
         </activity>
         <activity android:name=".ui.MainActivity"

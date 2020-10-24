@@ -7,7 +7,7 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.moringaschool.myrestaurant.ui.RestaurantsActivity">
+    tools:context="com.moringaschool.myrestaurant.ui.RestaurantListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
