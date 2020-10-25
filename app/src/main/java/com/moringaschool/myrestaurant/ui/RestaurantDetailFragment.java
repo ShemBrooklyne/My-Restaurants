@@ -11,7 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.moringaschool.myrestaurant.Constants;
 import com.moringaschool.myrestaurant.R;
 import com.moringaschool.myrestaurant.models.Business;
 import com.moringaschool.myrestaurant.models.Category;
@@ -31,14 +35,22 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class RestaurantDetailFragment extends Fragment implements View.OnClickListener {
-    @BindView(R.id.restaurantImageView) ImageView mImageLabel;
-    @BindView(R.id.restaurantNameTextView) TextView mNameLabel;
-    @BindView(R.id.cuisineTextView) TextView mCategoriesLabel;
-    @BindView(R.id.ratingTextView) TextView mRatingLabel;
-    @BindView(R.id.websiteTextView) TextView mWebsiteLabel;
-    @BindView(R.id.phoneTextView) TextView mPhoneLabel;
-    @BindView(R.id.addressTextView) TextView mAddressLabel;
-    @BindView(R.id.saveRestaurantButton) TextView mSaveRestaurantButton;
+    @BindView(R.id.restaurantImageView)
+    ImageView mImageLabel;
+    @BindView(R.id.restaurantNameTextView)
+    TextView mNameLabel;
+    @BindView(R.id.cuisineTextView)
+    TextView mCategoriesLabel;
+    @BindView(R.id.ratingTextView)
+    TextView mRatingLabel;
+    @BindView(R.id.websiteTextView)
+    TextView mWebsiteLabel;
+    @BindView(R.id.phoneTextView)
+    TextView mPhoneLabel;
+    @BindView(R.id.addressTextView)
+    TextView mAddressLabel;
+    @BindView(R.id.saveRestaurantButton)
+    TextView mSaveRestaurantButton;
 
     private Business mRestaurant;
 
@@ -78,6 +90,13 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
         mRatingLabel.setText(Double.toString(mRestaurant.getRating()) + "/5");
         mPhoneLabel.setText(mRestaurant.getPhone());
         mAddressLabel.setText(mRestaurant.getLocation().toString());
+//        mAddressLabel.setText(android.text.TextUtils.join(", ", mRestaurant.getAddress()));
+
+        mWebsiteLabel.setOnClickListener(this);
+        mPhoneLabel.setOnClickListener(this);
+        mAddressLabel.setOnClickListener(this);
+
+        mSaveRestaurantButton.setOnClickListener(this);
 
         return view;
     }
@@ -100,6 +119,13 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
                             + "," + mRestaurant.getCoordinates().getLongitude()
                             + "?q=(" + mRestaurant.getName() + ")"));
             startActivity(mapIntent);
+        }
+        if (v == mSaveRestaurantButton) {
+            DatabaseReference restaurantRef = FirebaseDatabase
+                    .getInstance()
+                    .getReference(Constants.FIREBASE_CHILD_RESTAURANTS);
+            restaurantRef.push().setValue(mRestaurant);
+            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
         }
     }
 }
