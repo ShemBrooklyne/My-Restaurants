@@ -26,8 +26,7 @@ public class SavedRestaurantListActivity extends AppCompatActivity {
     private DatabaseReference mRestaurantReference;
     private FirebaseRecyclerAdapter<Restaurant, FirebaseRestaurantViewHolder> mFirebaseAdapter;
 
-    @BindView(R.id.recyclerView)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
 
 
     @Override

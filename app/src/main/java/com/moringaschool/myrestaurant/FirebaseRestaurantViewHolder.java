@@ -73,3 +73,4 @@ public class FirebaseRestaurantViewHolder extends RecyclerView.ViewHolder implem
         });
     }
 }
+
